@@ -1,0 +1,47 @@
+{
+    "SuperMarket" : [
+        "Lidl sagt Danke"
+
+    ],
+
+    "Travel" : [
+        "Booking.com",
+        "ADAC Geschaeftsstelle"
+    ],
+
+    "Hotel/Food" : [
+        "Autobahnrasthaus",
+        "Rasthaus",
+        "Lieferando.de"
+    ],
+
+    "Shopping" : [
+        "AMZN Mktp DE",
+        "Siemes Schuhcenter",
+        "toom"
+
+    ],
+
+    "Car" : [
+        "Shell",
+        "Reifen Simon",
+        "PARKGEBUEHREN",
+        "Q PARK"
+    ],
+
+    "MonthlyDeductions" : [
+        "AMAZON PRIM",
+        "Lebara Germany"
+
+    ],
+
+    "Utilities" : [
+        "Stadtwerke Langen Gesellschaft"
+    ],
+
+    "Other" : [
+        "CONNFAIR",
+        "HAUS DER 1000 UHREN",
+        "Greifvogel  und Eulen"
+    ]
+}
