@@ -1,6 +1,9 @@
 {
     "SuperMarket" : [
-        "Lidl sagt Danke"
+        "Lidl sagt Danke",
+        "Tegut Filiale",
+        "Rossmann",
+        "IIFOODS.DE",
 
     ],
 
@@ -12,12 +15,15 @@
     "Hotel/Food" : [
         "Autobahnrasthaus",
         "Rasthaus",
+        "Rasthof",
         "Lieferando.de"
     ],
 
     "Shopping" : [
         "AMZN Mktp DE",
         "Siemes Schuhcenter",
+        "KiK Fil",
+        "Kaufhaus Braun",
         "toom"
 
     ],
@@ -39,9 +45,16 @@
         "Stadtwerke Langen Gesellschaft"
     ],
 
+    "Medical" : [
+        "Dr. med. Nina Ewerdwal",
+    ],
+
     "Other" : [
         "CONNFAIR",
         "HAUS DER 1000 UHREN",
-        "Greifvogel  und Eulen"
+        "Greifvogel  und Eulen",
+        "Eble Uhren-Park"
     ]
+
+
 }
