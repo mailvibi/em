@@ -15,37 +15,46 @@
         "Autobahnrasthaus",
         "Rasthaus",
         "Rasthof",
-        "Lieferando.de"
+        "Lieferando.de",
+		"KFC"
     ],
 
     "Shopping" : [
-        "AMZN Mktp DE",
         "Siemes Schuhcenter",
         "KiK Fil",
         "Kaufhaus Braun",
         "toom"
-
     ],
+
+	"Amazon" : [
+        "AMZN Mktp DE",
+		"AMAZON.DE"
+	],
 
     "Car" : [
         "Shell",
         "Reifen Simon",
         "PARKGEBUEHREN",
-        "Q PARK"
+        "Q PARK",
+		"Parkhaus"
     ],
 
     "MonthlyDeductions" : [
         "AMAZON PRIM",
         "Lebara Germany"
-
     ],
+
+	"TV Tax" : [
+		"Rundfunk ARD, ZDF, DRadio"
+	],
 
     "Utilities" : [
         "Stadtwerke Langen Gesellschaft"
     ],
 
     "Medical" : [
-        "Dr. med. Nina Ewerdwal"
+        "Dr. med. Nina Ewerdwal",
+		"MUENCHSCHE-APOTHEKE"
     ],
 
     "Other" : [
@@ -54,6 +63,4 @@
         "Greifvogel  und Eulen",
         "Eble Uhren-Park"
     ]
-
-
 }
