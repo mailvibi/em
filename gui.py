@@ -15,8 +15,8 @@ class CsvPipelineApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Statement Studio")
-        self.geometry("760x560")
-        self.minsize(680, 500)
+        self.geometry("760x700")
+        self.minsize(680, 620)
         self.configure(background="#f3f0e8")
 
         self.statement_directory = tk.StringVar()
