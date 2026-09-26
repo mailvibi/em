@@ -24,7 +24,7 @@ def stage1_combine_csv_files(csvdir, opdir):
             raise Exception(f"Error processing {csv_file.name}: {error}") from error
 
     combined_df = pd.concat(all_dataframes, ignore_index=True)
-    output_file = Path(opdir) / "stage1_combined_data.csv"
+    output_file = Path(opdir) / "stage1_combine_csv_files_output.csv"
     combined_df.to_csv(output_file, index=False)
 
     print(f"Combined CSV file saved to: {output_file}")

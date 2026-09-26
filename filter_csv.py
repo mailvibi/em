@@ -18,7 +18,7 @@ def stage2_remove_columns_from_csv(csv_file_path, columns_to_remove, output_dire
         df_modified = df.copy()
         print("No matching columns found to remove")
 
-    output_path = Path(output_directory) / f"stage2_{input_file.stem}_modified.csv"
+    output_path = Path(output_directory) / "stage2_remove_columns_from_csv_output.csv"
     df_modified.to_csv(output_path, index=False)
 
     print(f"Modified CSV saved to: {output_path}")
@@ -53,7 +53,7 @@ def stage4_filter_and_convert_csv(csv_filename, column_name, output_directory):
             print(f"Warning: No negative values found in column '{column_name}'. Output file will be empty.")
 
         input_file = Path(csv_filename)
-        output_path = Path(output_directory) / f"{input_file.stem}_filtered.csv"
+        output_path = Path(output_directory) / "stage4_filter_and_convert_csv_output.csv"
         df_filtered.to_csv(output_path, index=False)
 
         print(f"Processed CSV saved to: {output_path}")

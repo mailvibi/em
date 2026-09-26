@@ -22,7 +22,7 @@ def stage3_categorize_csv_data(csv_filename, column_name, mapping_dict, output_d
     df["CATAGORY"] = df[column_name].map(find_category)
 
     input_file = Path(csv_filename)
-    output_path = Path(output_directory) / f"{input_file.stem}_categorized.csv"
+    output_path = Path(output_directory) / "stage3_categorize_csv_data_output.csv"
     df.to_csv(output_path, index=False)
 
     print(f"Categorized CSV saved to: {output_path}")

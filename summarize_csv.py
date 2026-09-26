@@ -36,7 +36,7 @@ def stage5_sum_amounts_by_category(csv_filename, output_directory):
         )
 
         input_file = Path(csv_filename)
-        output_path = Path(output_directory) / f"{input_file.stem}_category_summary.csv"
+        output_path = Path(output_directory) / "stage5_sum_amounts_by_category_output.csv"
         summary_df.to_csv(output_path, index=False)
 
         print(f"Category summary saved to: {output_path}")

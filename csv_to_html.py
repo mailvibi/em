@@ -39,7 +39,7 @@ def stage6_csv_to_html(csv_filename, output_directory=None):
             os.makedirs(output_dir, exist_ok=True)
 
         # Create output filename
-        output_filename = f"{input_path.stem}.html"
+        output_filename = "stage6_csv_to_html_output.html"
         output_path = output_dir / output_filename
 
         # Create HTML content with styling
