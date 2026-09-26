@@ -3,7 +3,7 @@ from pathlib import Path
 
 from categorize_csv import stage3_categorize_csv_data
 from combine_csv import stage1_combine_csv_files
-from csv_to_html import stage6_csv_to_html
+from csv_to_html import get_expense_report_title, stage6_csv_to_html
 from filter_csv import stage2_remove_columns_from_csv, stage4_filter_and_convert_csv
 from item_map import get_item_map
 from summarize_csv import stage5_sum_amounts_by_category
@@ -53,7 +53,10 @@ def run_pipeline(
     report("Summarizing categories...")
     stage5_output = stage5_sum_amounts_by_category(stage4_output, output_directory)
     report("Creating HTML report...")
-    report_path = stage6_csv_to_html(stage5_output, output_directory)
+    report_title = get_expense_report_title(stage4_output)
+    report_path = stage6_csv_to_html(
+        stage5_output, output_directory, report_title=report_title
+    )
 
     if not debug:
         for stage_output in (stage1_output, stage2_output, stage3_output, stage4_output):

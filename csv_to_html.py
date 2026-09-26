@@ -1,10 +1,28 @@
+import calendar
 import os
 from pathlib import Path
 
 import pandas as pd
 
 
-def stage6_csv_to_html(csv_filename, output_directory=None):
+def get_expense_report_title(csv_filename):
+    """Build an expense report title from transaction booking dates."""
+    try:
+        date_df = pd.read_csv(csv_filename)
+        if "Booking Date" not in date_df.columns:
+            raise Exception(f"Column 'Booking Date' not found in '{csv_filename}'")
+
+        booking_dates = pd.to_datetime(date_df["Booking Date"], errors="coerce").dropna()
+        years = sorted(booking_dates.dt.year.unique())
+        months = sorted(booking_dates.dt.month.unique())
+        year_text = ", ".join(str(year) for year in years) or "Unknown"
+        month_text = ", ".join(calendar.month_name[month] for month in months) or "Unknown"
+        return f"Expense Report : Year - {year_text} , Month[s] : {month_text}"
+    except Exception as error:
+        raise Exception(f"Error extracting report dates from '{csv_filename}': {error}") from error
+
+
+def stage6_csv_to_html(csv_filename, output_directory=None, report_title="CSV Data"):
     """
     Convert a CSV file to an HTML file with table formatting.
 
@@ -30,8 +48,9 @@ def stage6_csv_to_html(csv_filename, output_directory=None):
         except Exception as e:
             raise Exception(f"Error reading CSV file '{csv_filename}': {e}")
 
-        # Determine output directory
         input_path = Path(csv_filename)
+
+        # Determine output directory
         if output_directory is None:
             output_dir = input_path.parent
         else:
@@ -48,7 +67,7 @@ def stage6_csv_to_html(csv_filename, output_directory=None):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{input_path.stem} - CSV Data</title>
+    <title>{report_title}</title>
     <style>
         body {{
             font-family: Arial, sans-serif;
@@ -98,7 +117,7 @@ def stage6_csv_to_html(csv_filename, output_directory=None):
 </head>
 <body>
     <div class="container">
-        <h1>CSV Data: {input_path.name}</h1>
+        <h1>{report_title}</h1>
         {df.to_html(table_id='data-table', classes='table', escape=False, index=False)}
         <div class="info">
             <strong>Data Information:</strong><br>
