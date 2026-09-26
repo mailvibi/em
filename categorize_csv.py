@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def categorize_csv_data(csv_filename, column_name, mapping_dict, output_directory):
+def stage3_categorize_csv_data(csv_filename, column_name, mapping_dict, output_directory):
     """Add categories based on matching mapping keys and save the CSV."""
     os.makedirs(output_directory, exist_ok=True)
     df = pd.read_csv(csv_filename)

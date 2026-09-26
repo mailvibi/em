@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def remove_columns_from_csv(csv_file_path, columns_to_remove, output_directory):
+def stage2_remove_columns_from_csv(csv_file_path, columns_to_remove, output_directory):
     """Remove selected columns and save the modified CSV."""
     os.makedirs(output_directory, exist_ok=True)
     df = pd.read_csv(csv_file_path)
@@ -26,7 +26,7 @@ def remove_columns_from_csv(csv_file_path, columns_to_remove, output_directory):
     return output_path
 
 
-def filter_and_convert_csv(csv_filename, column_name, output_directory):
+def stage4_filter_and_convert_csv(csv_filename, column_name, output_directory):
     """Keep negative values, convert them to positive, and save the CSV."""
     try:
         os.makedirs(output_directory, exist_ok=True)

@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def csv_to_html(csv_filename, output_directory=None):
+def stage6_csv_to_html(csv_filename, output_directory=None):
     """
     Convert a CSV file to an HTML file with table formatting.
 

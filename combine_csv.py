@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def combine_csv_files(csvdir, opdir):
+def stage1_combine_csv_files(csvdir, opdir):
     """Combine CSV files from ``csvdir`` and save the result to ``opdir``."""
     os.makedirs(opdir, exist_ok=True)
     csv_files = list(Path(csvdir).glob("*.csv"))

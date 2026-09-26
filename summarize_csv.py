@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def sum_amounts_by_category(csv_filename, output_directory):
+def stage5_sum_amounts_by_category(csv_filename, output_directory):
     """Sum amounts by category and save the summary CSV."""
     try:
         os.makedirs(output_directory, exist_ok=True)
