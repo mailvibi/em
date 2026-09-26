@@ -1,3 +1,4 @@
+import argparse
 import queue
 import threading
 import webbrowser
@@ -12,8 +13,9 @@ from sm import run_pipeline
 class CsvPipelineApp(tk.Tk):
     """Desktop interface for the CSV processing pipeline."""
 
-    def __init__(self):
+    def __init__(self, debug=False):
         super().__init__()
+        self.debug = debug
         self.title("Statement Studio")
         self.geometry("760x700")
         self.minsize(680, 620)
@@ -143,18 +145,19 @@ class CsvPipelineApp(tk.Tk):
         self._write_log("Starting pipeline")
         thread = threading.Thread(
             target=self._run_pipeline,
-            args=(statement_directory, output_directory, mapping_file),
+            args=(statement_directory, output_directory, mapping_file, self.debug),
             daemon=True,
         )
         thread.start()
 
-    def _run_pipeline(self, statement_directory, output_directory, mapping_file):
+    def _run_pipeline(self, statement_directory, output_directory, mapping_file, debug=False):
         try:
             result = run_pipeline(
                 statement_directory,
                 output_directory,
                 mapping_file=mapping_file,
                 progress_callback=lambda message: self.messages.put(("progress", message)),
+                debug=debug,
             )
             self.messages.put(("success", Path(result)))
         except Exception as error:
@@ -197,7 +200,14 @@ class CsvPipelineApp(tk.Tk):
 
 
 def main():
-    app = CsvPipelineApp()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Keep intermediate stage CSV files in the output directory",
+    )
+    args = parser.parse_args()
+    app = CsvPipelineApp(debug=args.debug)
     app.mainloop()
 
 

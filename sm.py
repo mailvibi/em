@@ -17,7 +17,13 @@ DEFAULT_COLUMNS_TO_KEEP = [
 ]
 
 
-def run_pipeline(statement_directory, output_directory, mapping_file=None, progress_callback=None):
+def run_pipeline(
+    statement_directory,
+    output_directory,
+    mapping_file=None,
+    progress_callback=None,
+    debug=False,
+):
     """Run all CSV processing stages and return the generated HTML path."""
     statement_directory = Path(statement_directory)
     output_directory = Path(output_directory)
@@ -47,17 +53,29 @@ def run_pipeline(statement_directory, output_directory, mapping_file=None, progr
     report("Summarizing categories...")
     stage5_output = stage5_sum_amounts_by_category(stage4_output, output_directory)
     report("Creating HTML report...")
-    return stage6_csv_to_html(stage5_output, output_directory)
+    report_path = stage6_csv_to_html(stage5_output, output_directory)
 
+    if not debug:
+        for stage_output in (stage1_output, stage2_output, stage3_output, stage4_output):
+            Path(stage_output).unlink(missing_ok=True)
 
+    return report_path
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--statementdir", required=True)
     parser.add_argument("--outputdir", required=True)
     parser.add_argument("--mapping-file")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Keep intermediate stage CSV files in the output directory",
+    )
     args = parser.parse_args()
     report_path = run_pipeline(
-        args.statementdir, args.outputdir, mapping_file=args.mapping_file
+        args.statementdir,
+        args.outputdir,
+        mapping_file=args.mapping_file,
+        debug=args.debug,
     )
     print(f"Report created: {report_path}")
 
