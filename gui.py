@@ -137,6 +137,7 @@ class CsvPipelineApp(tk.Tk):
 
         self.run_button.configure(state="disabled")
         self.open_button.configure(state="disabled")
+        self.progress.configure(mode="indeterminate", value=0)
         self.progress.start(12)
         self.status_text.set("Processing statements...")
         self._write_log("Starting pipeline")
@@ -168,6 +169,7 @@ class CsvPipelineApp(tk.Tk):
                     self._write_log(value)
                 elif message_type == "success":
                     self.progress.stop()
+                    self.progress.configure(mode="determinate", value=100)
                     self.result_path = value
                     self.status_text.set("Report ready")
                     self._write_log(f"Report created: {value}")
