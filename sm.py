@@ -9,15 +9,11 @@ from item_map import get_item_map
 from summarize_csv import stage5_sum_amounts_by_category
 
 
-DEFAULT_COLUMNS_TO_REMOVE = [
-    "Value Date",
-    "Partner Iban",
-    "Type",
-    "Payment Reference",
-    "Account Name",
-    "Original Amount",
-    "Original Currency",
-    "Exchange Rate",
+DEFAULT_COLUMNS_TO_KEEP = [
+    "Booking Date",
+    "Partner Name",
+    "Amount (EUR)",
+    "csvfilename",
 ]
 
 
@@ -37,7 +33,7 @@ def run_pipeline(statement_directory, output_directory, mapping_file=None, progr
 
     report("Removing unused columns...")
     stage2_output = stage2_remove_columns_from_csv(
-        stage1_output, DEFAULT_COLUMNS_TO_REMOVE, output_directory
+        stage1_output, DEFAULT_COLUMNS_TO_KEEP, output_directory
     )
     report("Categorizing transactions...")
     item_map = get_item_map(mapping_file)

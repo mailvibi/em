@@ -4,19 +4,15 @@ from pathlib import Path
 import pandas as pd
 
 
-def stage2_remove_columns_from_csv(csv_file_path, columns_to_remove, output_directory):
+def stage2_remove_columns_from_csv(csv_file_path, columns_to_keep, output_directory):
     """Remove selected columns and save the modified CSV."""
     os.makedirs(output_directory, exist_ok=True)
     df = pd.read_csv(csv_file_path)
     input_file = Path(csv_file_path)
-    columns_to_drop = [column for column in columns_to_remove if column in df.columns]
-
-    if columns_to_drop:
-        df_modified = df.drop(columns=columns_to_drop)
-        print(f"Removed columns: {columns_to_drop}")
-    else:
-        df_modified = df.copy()
-        print("No matching columns found to remove")
+    existing_columns_to_keep = [column for column in columns_to_keep if column in df.columns]
+    df_modified = df.loc[:, existing_columns_to_keep]
+    columns_removed = [column for column in df.columns if column not in existing_columns_to_keep]
+    print(f"Removed columns: {columns_removed}")
 
     output_path = Path(output_directory) / "stage2_remove_columns_from_csv_output.csv"
     df_modified.to_csv(output_path, index=False)
