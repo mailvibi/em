@@ -90,7 +90,7 @@ def stage4_filter_and_convert_csv(csv_filename, column_name, output_directory):
 
 
 def stage4_1_filter_partner_names(csv_filename, filter_json_path, output_directory):
-    """Remove rows whose Partner Name appears in the supplied JSON filter."""
+    """Remove rows whose Partner Name starts with a supplied JSON filter value."""
     with open(filter_json_path, encoding="utf-8") as filter_file:
         filter_data = json.load(filter_file)
 
@@ -106,7 +106,10 @@ def stage4_1_filter_partner_names(csv_filename, filter_json_path, output_directo
     if PARTNER_NAME_COLUMN not in df.columns:
         raise ValueError(f"Column '{PARTNER_NAME_COLUMN}' not found in CSV file")
 
-    df_filtered = df[~df[PARTNER_NAME_COLUMN].isin(partner_names)]
+    matches_filter = df[PARTNER_NAME_COLUMN].astype("string").str.startswith(
+        tuple(partner_names), na=False
+    )
+    df_filtered = df[~matches_filter]
     os.makedirs(output_directory, exist_ok=True)
     output_path = Path(output_directory) / "stage4_1_filter_partner_names_output.csv"
     df_filtered.to_csv(output_path, index=False)

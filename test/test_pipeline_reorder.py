@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.combine_csv import stage0_1_add_csvfilename, stage0_2_normalize_german_columns
-from src.filter_csv import stage4_filter_and_convert_csv
+from src.filter_csv import stage4_1_filter_partner_names, stage4_filter_and_convert_csv
 from src.sm import run_pipeline
 
 
@@ -14,6 +14,39 @@ def _write_csv(path: Path, rows, columns):
 
 
 class PipelineStageReorderTests(unittest.TestCase):
+    def test_stage4_1_filters_partner_names_by_prefix(self):
+        source_dir = Path("/tmp") / "statement_pipeline_partner_prefix_test"
+        if source_dir.exists():
+            shutil.rmtree(source_dir)
+        source_dir.mkdir()
+        input_path = source_dir / "transactions.csv"
+        _write_csv(
+            input_path,
+            [
+                ["Scalable Capital Bank GmbH"],
+                [
+                    "Scalable Capital Bank GmbH Scalable Capital Broker 3x Sparplän e "
+                    "End-to-End-Ref.: 29780359ea6d47caae7217fbf5ffe62f Mandatsref: "
+                    "5KFBG3TRXAUSDA2RPTSJMH Gläubiger-ID: DE63MUC00001787612 SEPA-BASISLASTSCHRIFT wiederholend"
+                ],
+                ["Scalable Capital Bank AG"],
+                ["Other Bank"],
+            ],
+            ["Partner Name"],
+        )
+        filter_path = source_dir / "filter.json"
+        filter_path.write_text(
+            '{"Partner Name": ["Scalable Capital Bank GmbH"]}',
+            encoding="utf-8",
+        )
+
+        output_path = stage4_1_filter_partner_names(
+            input_path, filter_path, source_dir / "output"
+        )
+        filtered = pd.read_csv(output_path)
+
+        self.assertEqual(filtered["Partner Name"].tolist(), ["Scalable Capital Bank AG", "Other Bank"])
+
     def test_stage4_reports_csv_line_for_non_numeric_value(self):
         source_dir = Path("/tmp") / "statement_pipeline_invalid_amount_test"
         if source_dir.exists():
