@@ -3,6 +3,13 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.constants import (
+    CSV_FILENAME_COLUMN,
+    GERMAN_BOOKING_DATE_COLUMN,
+    GERMAN_COLUMN_RENAMES,
+    REQUIRED_SOURCE_COLUMNS,
+)
+
 
 def stage0_1_add_csvfilename(csv_file_path, output_directory):
     """Add the source filename stem as csvfilename and save a prepared copy."""
@@ -10,22 +17,35 @@ def stage0_1_add_csvfilename(csv_file_path, output_directory):
     output_dir = Path(output_directory)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    df = pd.read_csv(input_path)
-    df["csvfilename"] = input_path.stem
+    with input_path.open("r", encoding="utf-8-sig") as input_file:
+        first_header = input_file.readline().split(";")[0]
+    if first_header == GERMAN_BOOKING_DATE_COLUMN:
+        df = pd.read_csv(input_path, sep=";", encoding="utf-8-sig")
+    else:
+        df = pd.read_csv(input_path)
+    df[CSV_FILENAME_COLUMN] = input_path.stem
     output_path = output_dir / f"{input_path.stem}_stage0_1_prepared.csv"
     df.to_csv(output_path, index=False)
     return output_path
 
 
-def stage0_2_passthrough(file_paths):
-    """Explicit no-op pass-through for the preparation pipeline stage."""
-    return list(file_paths)
+def stage0_2_normalize_german_columns(file_paths):
+    """Normalize supported German statement headers in prepared CSV files."""
+    normalized_paths = []
+    for file_path in file_paths:
+        input_path = Path(file_path)
+        df = pd.read_csv(input_path)
+        if GERMAN_BOOKING_DATE_COLUMN in df.columns:
+            df = df.rename(columns=GERMAN_COLUMN_RENAMES)
+            df.to_csv(input_path, index=False)
+        normalized_paths.append(input_path)
+    return normalized_paths
 
 
 def stage0_3_validate_required_columns(csv_file_path, required_columns=None):
     """Validate that a prepared CSV contains the required source columns."""
     if required_columns is None:
-        required_columns = ["Booking Date", "Partner Name", "Amount (EUR)"]
+        required_columns = REQUIRED_SOURCE_COLUMNS
 
     input_path = Path(csv_file_path)
     df = pd.read_csv(input_path)
@@ -50,7 +70,7 @@ def stage1_combine_csv_files(csvdir, opdir):
     for csv_file in csv_files:
         try:
             df = pd.read_csv(csv_file)
-            df["csvfilename"] = csv_file.stem
+            df[CSV_FILENAME_COLUMN] = csv_file.stem
             all_dataframes.append(df)
             print(f"Processed: {csv_file.name}")
         except Exception as error:

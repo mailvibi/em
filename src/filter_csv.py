@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.constants import PARTNER_NAME_COLUMN
+
 
 def stage1_remove_columns_from_csv(csv_file_path, columns_to_keep, output_directory):
     """Keep only the allowed columns for a single prepared source file."""
@@ -84,17 +86,19 @@ def stage4_1_filter_partner_names(csv_filename, filter_json_path, output_directo
     with open(filter_json_path, encoding="utf-8") as filter_file:
         filter_data = json.load(filter_file)
 
-    partner_names = filter_data.get("Partner Name") if isinstance(filter_data, dict) else None
+    partner_names = filter_data.get(PARTNER_NAME_COLUMN) if isinstance(filter_data, dict) else None
     if not isinstance(partner_names, list) or not all(
         isinstance(name, str) for name in partner_names
     ):
-        raise ValueError("Filter JSON must contain a 'Partner Name' list of strings")
+        raise ValueError(
+            f"Filter JSON must contain a '{PARTNER_NAME_COLUMN}' list of strings"
+        )
 
     df = pd.read_csv(csv_filename)
-    if "Partner Name" not in df.columns:
-        raise ValueError("Column 'Partner Name' not found in CSV file")
+    if PARTNER_NAME_COLUMN not in df.columns:
+        raise ValueError(f"Column '{PARTNER_NAME_COLUMN}' not found in CSV file")
 
-    df_filtered = df[~df["Partner Name"].isin(partner_names)]
+    df_filtered = df[~df[PARTNER_NAME_COLUMN].isin(partner_names)]
     os.makedirs(output_directory, exist_ok=True)
     output_path = Path(output_directory) / "stage4_1_filter_partner_names_output.csv"
     df_filtered.to_csv(output_path, index=False)

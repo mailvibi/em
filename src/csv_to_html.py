@@ -5,15 +5,21 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.constants import BOOKING_DATE_COLUMN, TOTAL_AMOUNT_EUR_COLUMN
+
 
 def get_expense_report_title(csv_filename):
     """Build an expense report title from transaction booking dates."""
     try:
         date_df = pd.read_csv(csv_filename)
-        if "Booking Date" not in date_df.columns:
-            raise Exception(f"Column 'Booking Date' not found in '{csv_filename}'")
+        if BOOKING_DATE_COLUMN not in date_df.columns:
+            raise Exception(
+                f"Column '{BOOKING_DATE_COLUMN}' not found in '{csv_filename}'"
+            )
 
-        booking_dates = pd.to_datetime(date_df["Booking Date"], errors="coerce").dropna()
+        booking_dates = pd.to_datetime(
+            date_df[BOOKING_DATE_COLUMN], errors="coerce"
+        ).dropna()
         years = sorted(booking_dates.dt.year.unique())
         months = sorted(booking_dates.dt.month.unique())
         year_text = ", ".join(str(year) for year in years) or "Unknown"
@@ -51,8 +57,8 @@ def stage6_csv_to_html(csv_filename, output_directory=None, report_title="CSV Da
 
         input_path = Path(csv_filename)
         total_expense = None
-        if "Total Amount (EUR)" in df.columns:
-            amounts = pd.to_numeric(df["Total Amount (EUR)"], errors="coerce")
+        if TOTAL_AMOUNT_EUR_COLUMN in df.columns:
+            amounts = pd.to_numeric(df[TOTAL_AMOUNT_EUR_COLUMN], errors="coerce")
             total_expense = amounts.sum()
 
         # Determine output directory

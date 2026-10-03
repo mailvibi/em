@@ -11,9 +11,15 @@ if __package__ in (None, ""):
 from src.categorize_csv import stage3_categorize_csv_data
 from src.combine_csv import (
     stage0_1_add_csvfilename,
-    stage0_2_passthrough,
+    stage0_2_normalize_german_columns,
     stage0_3_validate_required_columns,
     stage2_combine_csv_files,
+)
+from src.constants import (
+    AMOUNT_EUR_COLUMN,
+    DEFAULT_COLUMNS_TO_KEEP,
+    PARTNER_NAME_COLUMN,
+    REQUIRED_SOURCE_COLUMNS,
 )
 from src.csv_to_html import get_expense_report_title, stage6_csv_to_html
 from src.filter_csv import (
@@ -24,15 +30,6 @@ from src.filter_csv import (
 )
 from src.item_map import get_item_map
 from src.summarize_csv import stage5_sum_amounts_by_category
-
-
-DEFAULT_COLUMNS_TO_KEEP = [
-    "Booking Date",
-    "Partner Name",
-    "Amount (EUR)",
-    "csvfilename",
-]
-REQUIRED_SOURCE_COLUMNS = ["Booking Date", "Partner Name", "Amount (EUR)"]
 
 
 def _validate_source_directory(statement_directory, output_directory):
@@ -98,9 +95,10 @@ def run_pipeline(
                 prepared_paths = []
                 for csv_file in csv_files:
                     prepared_path = stage0_1_add_csvfilename(csv_file, prepared_directory)
-                    stage0_3_validate_required_columns(prepared_path, REQUIRED_SOURCE_COLUMNS)
                     prepared_paths.append(prepared_path)
-                stage0_2_passthrough(prepared_paths)
+                prepared_paths = stage0_2_normalize_german_columns(prepared_paths)
+                for prepared_path in prepared_paths:
+                    stage0_3_validate_required_columns(prepared_path, REQUIRED_SOURCE_COLUMNS)
 
                 report("Filtering unused columns...")
                 stage1_paths = []
@@ -115,9 +113,13 @@ def run_pipeline(
 
                 report("Categorizing transactions...")
                 item_map = get_item_map(mapping_file)
-                stage3_output = stage3_categorize_csv_data(stage2_output, "Partner Name", item_map, run_directory)
+                stage3_output = stage3_categorize_csv_data(
+                    stage2_output, PARTNER_NAME_COLUMN, item_map, run_directory
+                )
                 report("Filtering outgoing transactions...")
-                stage4_output = stage4_filter_and_convert_csv(stage3_output, "Amount (EUR)", run_directory)
+                stage4_output = stage4_filter_and_convert_csv(
+                    stage3_output, AMOUNT_EUR_COLUMN, run_directory
+                )
                 stage5_input = stage4_output
                 stage4_1_output = None
                 if partner_filter_file is not None:

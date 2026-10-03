@@ -11,6 +11,13 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.item_map import get_item_map, get_item_map_from_dir
+from src.constants import (
+    BOOKING_DATE_COLUMN,
+    CSV_FILENAME_COLUMN,
+    CSV_FILE_NAME_COLUMN,
+    OCCURRENCES_COLUMN,
+    PARTNER_NAME_COLUMN,
+)
 
 
 def find_category_for_value(value, mapping_dict):
@@ -52,24 +59,35 @@ def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None, m
         except Exception as exc:  # pragma: no cover - defensive error handling
             raise ValueError(f"Could not read '{csv_file}': {exc}") from exc
 
-        if "Partner Name" not in dataframe.columns:
-            raise ValueError(f"Column 'Partner Name' not found in '{csv_file}'")
-        if "Booking Date" not in dataframe.columns:
-            raise ValueError(f"Column 'Booking Date' not found in '{csv_file}'")
+        if PARTNER_NAME_COLUMN not in dataframe.columns:
+            raise ValueError(f"Column '{PARTNER_NAME_COLUMN}' not found in '{csv_file}'")
+        if BOOKING_DATE_COLUMN not in dataframe.columns:
+            raise ValueError(f"Column '{BOOKING_DATE_COLUMN}' not found in '{csv_file}'")
 
         uncategorized = dataframe[
-            dataframe["Partner Name"].map(lambda value: find_category_for_value(value, mapping_dict) == "NO CATEGORY")
+            dataframe[PARTNER_NAME_COLUMN].map(
+                lambda value: find_category_for_value(value, mapping_dict) == "NO CATEGORY"
+            )
         ].copy()
 
         if not uncategorized.empty:
-            uncategorized["CSV File Name"] = uncategorized.get(
-                "csvfilename", csv_file.name
+            uncategorized[CSV_FILE_NAME_COLUMN] = uncategorized.get(
+                CSV_FILENAME_COLUMN, csv_file.name
             )
-            frames.append(uncategorized[["Booking Date", "Partner Name", "CSV File Name"]])
+            frames.append(
+                uncategorized[
+                    [BOOKING_DATE_COLUMN, PARTNER_NAME_COLUMN, CSV_FILE_NAME_COLUMN]
+                ]
+            )
 
     if not frames:
         empty_df = pd.DataFrame(
-            columns=["Booking Date", "Partner Name", "CSV File Name", "Occurrences"]
+            columns=[
+                BOOKING_DATE_COLUMN,
+                PARTNER_NAME_COLUMN,
+                CSV_FILE_NAME_COLUMN,
+                OCCURRENCES_COLUMN,
+            ]
         )
         if output_file is not None:
             empty_df.to_csv(output_file, index=False)
@@ -78,13 +96,13 @@ def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None, m
     combined = pd.concat(frames, ignore_index=True)
     counts = (
         combined.groupby(
-            ["Booking Date", "Partner Name", "CSV File Name"],
+            [BOOKING_DATE_COLUMN, PARTNER_NAME_COLUMN, CSV_FILE_NAME_COLUMN],
             dropna=False,
         )
         .size()
-        .reset_index(name="Occurrences")
+        .reset_index(name=OCCURRENCES_COLUMN)
         .sort_values(
-            ["Occurrences", "Booking Date", "Partner Name", "CSV File Name"],
+            [OCCURRENCES_COLUMN, BOOKING_DATE_COLUMN, PARTNER_NAME_COLUMN, CSV_FILE_NAME_COLUMN],
             ascending=[False, True, True, True],
         )
         .reset_index(drop=True)

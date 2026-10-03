@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.constants import CATEGORY_COLUMN
+
 
 def stage3_categorize_csv_data(csv_filename, column_name, mapping_dict, output_directory):
     """Add categories based on matching mapping keys and save the CSV."""
@@ -19,7 +21,7 @@ def stage3_categorize_csv_data(csv_filename, column_name, mapping_dict, output_d
             "NO CATEGORY",
         )
 
-    df["CATEGORY"] = df[column_name].map(find_category)
+    df[CATEGORY_COLUMN] = df[column_name].map(find_category)
 
     input_file = Path(csv_filename)
     output_path = Path(output_directory) / "stage3_categorize_csv_data_output.csv"

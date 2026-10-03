@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.combine_csv import stage0_1_add_csvfilename
+from src.combine_csv import stage0_1_add_csvfilename, stage0_2_normalize_german_columns
 from src.sm import run_pipeline
 
 
@@ -13,6 +13,29 @@ def _write_csv(path: Path, rows, columns):
 
 
 class PipelineStageReorderTests(unittest.TestCase):
+    def test_stage0_2_renames_german_statement_columns(self):
+        with self.subTest():
+            source_dir = Path("/tmp") / "statement_pipeline_german_test"
+            if source_dir.exists():
+                shutil.rmtree(source_dir)
+            source_dir.mkdir()
+            source_path = source_dir / "german.csv"
+            source_path.write_text(
+                "\ufeffBuchungstag;Wertstellung;Buchungstext;Betrag;Währung\n"
+                "2026-09-30;2026-09-30;Grocer;-15.5;EUR\n",
+                encoding="utf-8",
+            )
+
+            prepared_path = stage0_1_add_csvfilename(source_path, source_dir / "prepared")
+            normalized_paths = stage0_2_normalize_german_columns([prepared_path])
+            df = pd.read_csv(normalized_paths[0])
+
+            self.assertEqual(
+                list(df.columns),
+                ["Booking Date", "Wertstellung", "Partner Name", "Amount (EUR)", "Währung", "csvfilename"],
+            )
+            self.assertEqual(df["Partner Name"].tolist(), ["Grocer"])
+
     def test_stage0_1_add_csvfilename_sets_source_stem(self):
         with self.subTest():
             source_dir = Path("/tmp") / "statement_pipeline_stage0_test"
