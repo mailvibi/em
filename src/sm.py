@@ -87,7 +87,8 @@ def run_pipeline(
 
             csv_files = sorted(statement_directory.glob("*.csv"))
             if not csv_files:
-                shutil.rmtree(run_directory, ignore_errors=True)
+                if not debug:
+                    shutil.rmtree(run_directory, ignore_errors=True)
                 raise ValueError(f"No CSV files found in '{statement_directory}'")
 
             try:
@@ -140,7 +141,8 @@ def run_pipeline(
                     shutil.rmtree(run_directory, ignore_errors=True)
                 return str(report_path)
             except Exception:
-                shutil.rmtree(run_directory, ignore_errors=True)
+                if not debug:
+                    shutil.rmtree(run_directory, ignore_errors=True)
                 raise
         finally:
             lock_path.unlink(missing_ok=True)

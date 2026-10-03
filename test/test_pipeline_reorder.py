@@ -125,6 +125,33 @@ class PipelineStageReorderTests(unittest.TestCase):
             )
             self.assertEqual(combined["csvfilename"].tolist(), ["first", "first", "second"])
 
+    def test_run_pipeline_keeps_intermediates_after_error_in_debug_mode(self):
+        source_dir = Path("/tmp") / "statement_pipeline_debug_error_test"
+        output_dir = Path("/tmp") / "statement_pipeline_debug_error_out"
+        if source_dir.exists():
+            shutil.rmtree(source_dir)
+        if output_dir.exists():
+            shutil.rmtree(output_dir)
+
+        source_dir.mkdir()
+        output_dir.mkdir()
+        _write_csv(
+            source_dir / "statement.csv",
+            [["2026-01-10", "Grocer", -15.5]],
+            ["Booking Date", "Partner Name", "Amount (EUR)"],
+        )
+
+        with self.assertRaises(Exception):
+            run_pipeline(
+                source_dir,
+                output_dir,
+                mapping_file=str(source_dir / "missing_mapping.json"),
+                debug=True,
+            )
+
+        stage2_files = list(output_dir.rglob("stage2_combine_csv_files_output.csv"))
+        self.assertEqual(len(stage2_files), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
