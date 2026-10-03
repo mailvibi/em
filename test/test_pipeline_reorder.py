@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from combine_csv import stage0_1_add_csvfilename
-from sm import run_pipeline
+from src.combine_csv import stage0_1_add_csvfilename
+from src.sm import run_pipeline
 
 
 def _write_csv(path: Path, rows, columns):
@@ -63,6 +63,7 @@ class PipelineStageReorderTests(unittest.TestCase):
 
             self.assertEqual(report_path, str(output_dir / "stage6_csv_to_html_output.html"))
             self.assertTrue(Path(report_path).exists())
+            self.assertFalse((output_dir / ".statement_pipeline.lock").exists())
 
             stage2_files = sorted(output_dir.rglob("stage2_combine_csv_files_output.csv"))
             self.assertEqual(len(stage2_files), 1)
