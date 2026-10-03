@@ -37,10 +37,17 @@ python -m pip install -r requirements.txt
 ## Command-line usage
 
 ```bash
-python sm.py --statementdir ./statements --outputdir ./output --mapping-file ./shopname_category_mapping.json
+python sm.py --statementdir ./statements --outputdir ./output --mapping-file ./shopname_category_mapping.json --partner-filter-file ./partner_filter.json
 ```
 
 This generates an HTML report in the output folder.
+The optional `--partner-filter-file` excludes transactions whose `Partner Name` exactly matches a value in the JSON file. Its format is:
+
+```json
+{
+	"Partner Name": ["Example Name 1", "Example Name 2"]
+}
+```
 
 ## GUI usage
 
@@ -48,7 +55,7 @@ This generates an HTML report in the output folder.
 python gui.py
 ```
 
-The GUI lets you choose the statement folder, output folder, and mapping file, then starts the processing pipeline from a desktop window.
+The GUI lets you choose the statement folder, output folder, mapping file, and optional Partner Name filter JSON, then starts the processing pipeline from a desktop window.
 
 ## Building executables
 

@@ -6,7 +6,7 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from item_map import ITEM_TO_CATAGORY_MAP_FILE
+from item_map import ITEM_TO_CATEGORY_MAP_FILE
 from sm import run_pipeline
 
 
@@ -23,7 +23,8 @@ class CsvPipelineApp(tk.Tk):
 
         self.statement_directory = tk.StringVar()
         self.output_directory = tk.StringVar()
-        self.mapping_file = tk.StringVar(value=str(ITEM_TO_CATAGORY_MAP_FILE))
+        self.mapping_file = tk.StringVar(value=str(ITEM_TO_CATEGORY_MAP_FILE))
+        self.partner_filter_file = tk.StringVar()
         self.status_text = tk.StringVar(value="Ready to process statements")
         self.result_path = None
         self.messages = queue.Queue()
@@ -71,13 +72,14 @@ class CsvPipelineApp(tk.Tk):
         self._add_path_row(panel, 1, "Statement folder", self.statement_directory, self._choose_statement_directory, "Choose folder")
         self._add_path_row(panel, 2, "Output folder", self.output_directory, self._choose_output_directory, "Choose folder")
         self._add_path_row(panel, 3, "Mapping file", self.mapping_file, self._choose_mapping_file, "Choose file")
+        self._add_path_row(panel, 4, "Partner filter JSON", self.partner_filter_file, self._choose_partner_filter_file, "Choose file")
 
-        ttk.Separator(panel).grid(row=4, column=0, columnspan=3, sticky="ew", pady=22)
-        ttk.Label(panel, text="ACTIVITY", style="Section.TLabel").grid(row=5, column=0, columnspan=3, sticky="w")
+        ttk.Separator(panel).grid(row=5, column=0, columnspan=3, sticky="ew", pady=22)
+        ttk.Label(panel, text="ACTIVITY", style="Section.TLabel").grid(row=6, column=0, columnspan=3, sticky="w")
 
         self.progress = ttk.Progressbar(panel, mode="indeterminate")
-        self.progress.grid(row=6, column=0, columnspan=3, sticky="ew", pady=(14, 10))
-        panel.rowconfigure(7, weight=1)
+        self.progress.grid(row=7, column=0, columnspan=3, sticky="ew", pady=(14, 10))
+        panel.rowconfigure(8, weight=1)
         self.log = tk.Text(
             panel,
             height=8,
@@ -90,7 +92,7 @@ class CsvPipelineApp(tk.Tk):
             wrap="word",
             state="disabled",
         )
-        self.log.grid(row=7, column=0, columnspan=3, sticky="nsew")
+        self.log.grid(row=8, column=0, columnspan=3, sticky="nsew")
 
         ttk.Label(root, textvariable=self.status_text, style="Status.TLabel").grid(
             row=3, column=0, sticky="ew", pady=(16, 12)
@@ -125,16 +127,29 @@ class CsvPipelineApp(tk.Tk):
         if selected:
             self.mapping_file.set(selected)
 
+    def _choose_partner_filter_file(self):
+        selected = filedialog.askopenfilename(
+            title="Select Partner Name filter JSON",
+            filetypes=[("JSON files", "*.json"), ("All files", "*")],
+        )
+        if selected:
+            self.partner_filter_file.set(selected)
+
     def _start_pipeline(self):
         statement_directory = Path(self.statement_directory.get().strip())
         output_directory = Path(self.output_directory.get().strip())
         mapping_file = Path(self.mapping_file.get().strip())
+        partner_filter_value = self.partner_filter_file.get().strip()
+        partner_filter_file = Path(partner_filter_value) if partner_filter_value else None
 
         if not statement_directory.is_dir():
             messagebox.showerror("Missing statement folder", "Choose a folder containing statement CSV files.")
             return
         if not mapping_file.is_file():
             messagebox.showerror("Missing mapping file", "Choose a valid JSON mapping file.")
+            return
+        if partner_filter_file is not None and not partner_filter_file.is_file():
+            messagebox.showerror("Missing partner filter file", "Choose a valid JSON filter file or leave it blank.")
             return
 
         self.run_button.configure(state="disabled")
@@ -145,17 +160,18 @@ class CsvPipelineApp(tk.Tk):
         self._write_log("Starting pipeline")
         thread = threading.Thread(
             target=self._run_pipeline,
-            args=(statement_directory, output_directory, mapping_file, self.debug),
+            args=(statement_directory, output_directory, mapping_file, partner_filter_file, self.debug),
             daemon=True,
         )
         thread.start()
 
-    def _run_pipeline(self, statement_directory, output_directory, mapping_file, debug=False):
+    def _run_pipeline(self, statement_directory, output_directory, mapping_file, partner_filter_file=None, debug=False):
         try:
             result = run_pipeline(
                 statement_directory,
                 output_directory,
                 mapping_file=mapping_file,
+                partner_filter_file=partner_filter_file,
                 progress_callback=lambda message: self.messages.put(("progress", message)),
                 debug=debug,
             )

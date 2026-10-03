@@ -19,7 +19,7 @@ def stage3_categorize_csv_data(csv_filename, column_name, mapping_dict, output_d
             "NO CATEGORY",
         )
 
-    df["CATAGORY"] = df[column_name].map(find_category)
+    df["CATEGORY"] = df[column_name].map(find_category)
 
     input_file = Path(csv_filename)
     output_path = Path(output_directory) / "stage3_categorize_csv_data_output.csv"

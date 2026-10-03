@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -57,3 +58,25 @@ def stage4_filter_and_convert_csv(csv_filename, column_name, output_directory):
         return output_path
     except Exception as error:
         raise Exception(f"Error processing CSV file: {error}") from error
+
+
+def stage4_1_filter_partner_names(csv_filename, filter_json_path, output_directory):
+    """Remove rows whose Partner Name appears in the supplied JSON filter."""
+    with open(filter_json_path, encoding="utf-8") as filter_file:
+        filter_data = json.load(filter_file)
+
+    partner_names = filter_data.get("Partner Name") if isinstance(filter_data, dict) else None
+    if not isinstance(partner_names, list) or not all(
+        isinstance(name, str) for name in partner_names
+    ):
+        raise ValueError("Filter JSON must contain a 'Partner Name' list of strings")
+
+    df = pd.read_csv(csv_filename)
+    if "Partner Name" not in df.columns:
+        raise ValueError("Column 'Partner Name' not found in CSV file")
+
+    df_filtered = df[~df["Partner Name"].isin(partner_names)]
+    os.makedirs(output_directory, exist_ok=True)
+    output_path = Path(output_directory) / "stage4_1_filter_partner_names_output.csv"
+    df_filtered.to_csv(output_path, index=False)
+    return output_path

@@ -17,7 +17,7 @@ def stage5_sum_amounts_by_category(csv_filename, output_directory):
         except Exception as error:
             raise Exception(f"Error reading CSV file '{csv_filename}': {error}") from error
 
-        required_columns = ["Amount (EUR)", "CATAGORY"]
+        required_columns = ["Amount (EUR)", "CATEGORY"]
         missing_columns = [column for column in required_columns if column not in df.columns]
         if missing_columns:
             raise Exception(f"Required columns not found: {missing_columns}")
@@ -29,7 +29,7 @@ def stage5_sum_amounts_by_category(csv_filename, output_directory):
             print(f"Warning: Removed {original_rows - len(df)} rows with non-numeric 'Amount (EUR)' values")
 
         summary_df = (
-            df.groupby("CATAGORY")["Amount (EUR)"]
+            df.groupby("CATEGORY")["Amount (EUR)"]
             .sum()
             .reset_index(name="Total Amount (EUR)")
             .sort_values("Total Amount (EUR)", ascending=False)

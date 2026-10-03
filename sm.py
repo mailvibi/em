@@ -4,7 +4,11 @@ from pathlib import Path
 from categorize_csv import stage3_categorize_csv_data
 from combine_csv import stage1_combine_csv_files
 from csv_to_html import get_expense_report_title, stage6_csv_to_html
-from filter_csv import stage2_remove_columns_from_csv, stage4_filter_and_convert_csv
+from filter_csv import (
+    stage2_remove_columns_from_csv,
+    stage4_1_filter_partner_names,
+    stage4_filter_and_convert_csv,
+)
 from item_map import get_item_map
 from summarize_csv import stage5_sum_amounts_by_category
 
@@ -17,12 +21,14 @@ DEFAULT_COLUMNS_TO_KEEP = [
 ]
 
 
+
 def run_pipeline(
     statement_directory,
     output_directory,
     mapping_file=None,
     progress_callback=None,
     debug=False,
+    partner_filter_file=None,
 ):
     """Run all CSV processing stages and return the generated HTML path."""
     statement_directory = Path(statement_directory)
@@ -50,8 +56,16 @@ def run_pipeline(
     stage4_output = stage4_filter_and_convert_csv(
         stage3_output, "Amount (EUR)", output_directory
     )
+    stage5_input = stage4_output
+    stage4_1_output = None
+    if partner_filter_file is not None:
+        report("Filtering excluded partner names...")
+        stage4_1_output = stage4_1_filter_partner_names(
+            stage4_output, partner_filter_file, output_directory
+        )
+        stage5_input = stage4_1_output
     report("Summarizing categories...")
-    stage5_output = stage5_sum_amounts_by_category(stage4_output, output_directory)
+    stage5_output = stage5_sum_amounts_by_category(stage5_input, output_directory)
     report("Creating HTML report...")
     report_title = get_expense_report_title(stage4_output)
     report_path = stage6_csv_to_html(
@@ -59,7 +73,10 @@ def run_pipeline(
     )
 
     if not debug:
-        for stage_output in (stage1_output, stage2_output, stage3_output, stage4_output):
+        stage_outputs = [stage1_output, stage2_output, stage3_output, stage4_output]
+        if stage4_1_output is not None:
+            stage_outputs.append(stage4_1_output)
+        for stage_output in stage_outputs:
             Path(stage_output).unlink(missing_ok=True)
 
     return report_path
@@ -69,16 +86,22 @@ def main():
     parser.add_argument("--outputdir", required=True)
     parser.add_argument("--mapping-file")
     parser.add_argument(
+        "--partner-filter-file",
+        help="Optional JSON file listing Partner Name values to exclude",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Keep intermediate stage CSV files in the output directory",
     )
+
     args = parser.parse_args()
     report_path = run_pipeline(
         args.statementdir,
         args.outputdir,
         mapping_file=args.mapping_file,
         debug=args.debug,
+        partner_filter_file=args.partner_filter_file,
     )
     print(f"Report created: {report_path}")
 

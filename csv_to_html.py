@@ -49,6 +49,10 @@ def stage6_csv_to_html(csv_filename, output_directory=None, report_title="CSV Da
             raise Exception(f"Error reading CSV file '{csv_filename}': {e}")
 
         input_path = Path(csv_filename)
+        total_expense = None
+        if "Total Amount (EUR)" in df.columns:
+            amounts = pd.to_numeric(df["Total Amount (EUR)"], errors="coerce")
+            total_expense = amounts.sum()
 
         # Determine output directory
         if output_directory is None:
@@ -118,6 +122,7 @@ def stage6_csv_to_html(csv_filename, output_directory=None, report_title="CSV Da
 <body>
     <div class="container">
         <h1>{report_title}</h1>
+        {f'<p class="total-expense"><strong>Total expense:</strong> {total_expense:,.2f} EUR</p>' if total_expense is not None else ''}
         {df.to_html(table_id='data-table', classes='table', escape=False, index=False)}
         <div class="info">
             <strong>Data Information:</strong><br>

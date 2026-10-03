@@ -4,14 +4,14 @@ from pathlib import Path
 from combine_category_json import CategoryJsonCombiner
 
 
-ITEM_TO_CATAGORY_MAP_FILE = Path(__file__).resolve().with_name(
+ITEM_TO_CATEGORY_MAP_FILE = Path(__file__).resolve().with_name(
     "shopname_category_mapping.json"
 )
 
 
 def get_item_map(json_filename=None):
     """Load the item-to-category mapping and return its reversed form."""
-    mapping_path = Path(json_filename) if json_filename is not None else ITEM_TO_CATAGORY_MAP_FILE
+    mapping_path = Path(json_filename) if json_filename is not None else ITEM_TO_CATEGORY_MAP_FILE
 
     try:
         with mapping_path.open("r", encoding="utf-8") as file:
