@@ -22,7 +22,8 @@ class PipelineStageReorderTests(unittest.TestCase):
             source_path = source_dir / "german.csv"
             source_path.write_text(
                 "\ufeffBuchungstag;Wertstellung;Buchungstext;Betrag;Währung\n"
-                "2026-09-30;2026-09-30;Grocer;-15.5;EUR\n",
+                "2026-09-30;2026-09-30;Grocer;19,52;EUR\n"
+                "2026-10-01;2026-10-01;Cafe;'-19,52;EUR\n",
                 encoding="utf-8",
             )
 
@@ -34,7 +35,8 @@ class PipelineStageReorderTests(unittest.TestCase):
                 list(df.columns),
                 ["Booking Date", "Wertstellung", "Partner Name", "Amount (EUR)", "Währung", "csvfilename"],
             )
-            self.assertEqual(df["Partner Name"].tolist(), ["Grocer"])
+            self.assertEqual(df["Partner Name"].tolist(), ["Grocer", "Cafe"])
+            self.assertEqual(df["Amount (EUR)"].tolist(), [19.52, -19.52])
 
     def test_stage0_1_add_csvfilename_sets_source_stem(self):
         with self.subTest():

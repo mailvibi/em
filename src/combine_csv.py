@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.constants import (
+    AMOUNT_EUR_COLUMN,
     CSV_FILENAME_COLUMN,
     GERMAN_BOOKING_DATE_COLUMN,
     GERMAN_COLUMN_RENAMES,
@@ -24,7 +25,14 @@ def read_statement_csv(csv_file_path):
 def normalize_german_columns(dataframe):
     """Rename supported German statement columns to the standard schema."""
     if GERMAN_BOOKING_DATE_COLUMN in dataframe.columns:
-        return dataframe.rename(columns=GERMAN_COLUMN_RENAMES)
+        normalized_dataframe = dataframe.rename(columns=GERMAN_COLUMN_RENAMES)
+        normalized_dataframe[AMOUNT_EUR_COLUMN] = pd.to_numeric(
+            normalized_dataframe[AMOUNT_EUR_COLUMN]
+            .astype("string")
+            .str.replace(r"^'", "", regex=True)
+            .str.replace(",", ".", regex=False)
+        )
+        return normalized_dataframe
     return dataframe
 
 
