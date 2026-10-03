@@ -23,16 +23,17 @@ COMMON_ARGS=(
     --clean
     --onefile
     --add-data "shopname_category_mapping.json:."
+    --paths "$ROOT_DIR"
 )
 
 "$PYTHON" -m PyInstaller "${COMMON_ARGS[@]}" \
     --windowed \
     --name statement-studio \
-    gui.py
+    src/gui.py
 
 "$PYTHON" -m PyInstaller "${COMMON_ARGS[@]}" \
     --name statement-pipeline \
-    sm.py
+    src/sm.py
 
 echo
 echo "Executables created:"

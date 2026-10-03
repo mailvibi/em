@@ -15,14 +15,14 @@ It combines multiple statement files, removes noisy columns, matches transaction
 
 ## Project layout
 
-- `sm.py` — command-line pipeline entry point
-- `gui.py` — Tkinter desktop application
-- `combine_csv.py` — merge statement CSV files
-- `combine_category_json.py` — merge category mapping JSON files
-- `filter_csv.py` — remove columns and filter converted values
-- `categorize_csv.py` — assign category labels based on merchant text
-- `summarize_csv.py` — aggregate totals by category
-- `csv_to_html.py` — create the final HTML report
+- `src/sm.py` — command-line pipeline entry point
+- `src/gui.py` — Tkinter desktop application
+- `src/combine_csv.py` — merge statement CSV files
+- `src/combine_category_json.py` — merge category mapping JSON files
+- `src/filter_csv.py` — remove columns and filter converted values
+- `src/categorize_csv.py` — assign category labels based on merchant text
+- `src/summarize_csv.py` — aggregate totals by category
+- `src/csv_to_html.py` — create the final HTML report
 - `shopname_category_mapping.json` — default merchant-to-category rules
 - `build_executables.sh` — rebuild GUI and CLI executables with PyInstaller
 

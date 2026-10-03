@@ -1,2 +1,13 @@
 smdir/*
 opdir/*
+category_mapping/*
+filters/*
+filter.json
+test/*
+.env/
+env/
+build/
+dist/
+.vscode/
+__pycache__/
+*.pyc
