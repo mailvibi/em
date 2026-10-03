@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from item_map import get_item_map
+from item_map import get_item_map, get_item_map_from_dir
 
 
 def find_category_for_value(value, mapping_dict):
@@ -33,9 +33,13 @@ def iter_csv_files(csv_path):
     raise FileNotFoundError(f"CSV path '{csv_path}' does not exist")
 
 
-def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None):
+def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None, mapping_dir=None):
     """Read CSV files, identify partners with no mapping, and return a dataframe of results."""
-    mapping_dict = get_item_map(mapping_file)
+    mapping_dict = (
+        get_item_map_from_dir(mapping_dir)
+        if mapping_dir is not None
+        else get_item_map(mapping_file)
+    )
     frames = []
 
     for csv_file in iter_csv_files(csv_path):
@@ -46,28 +50,41 @@ def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None):
 
         if "Partner Name" not in dataframe.columns:
             raise ValueError(f"Column 'Partner Name' not found in '{csv_file}'")
+        if "Booking Date" not in dataframe.columns:
+            raise ValueError(f"Column 'Booking Date' not found in '{csv_file}'")
 
         uncategorized = dataframe[
             dataframe["Partner Name"].map(lambda value: find_category_for_value(value, mapping_dict) == "NO CATEGORY")
         ].copy()
 
         if not uncategorized.empty:
-            frames.append(uncategorized[["Partner Name"]])
+            uncategorized["CSV File Name"] = uncategorized.get(
+                "csvfilename", csv_file.name
+            )
+            frames.append(uncategorized[["Booking Date", "Partner Name", "CSV File Name"]])
 
     if not frames:
-        empty_df = pd.DataFrame(columns=["Partner Name", "Occurrences"])
+        empty_df = pd.DataFrame(
+            columns=["Booking Date", "Partner Name", "CSV File Name", "Occurrences"]
+        )
         if output_file is not None:
             empty_df.to_csv(output_file, index=False)
         return empty_df
 
     combined = pd.concat(frames, ignore_index=True)
     counts = (
-        combined["Partner Name"]
-        .value_counts()
-        .reset_index()
+        combined.groupby(
+            ["Booking Date", "Partner Name", "CSV File Name"],
+            dropna=False,
+        )
+        .size()
+        .reset_index(name="Occurrences")
+        .sort_values(
+            ["Occurrences", "Booking Date", "Partner Name", "CSV File Name"],
+            ascending=[False, True, True, True],
+        )
+        .reset_index(drop=True)
     )
-    counts.columns = ["Partner Name", "Occurrences"]
-    counts = counts.sort_values(["Occurrences", "Partner Name"], ascending=[False, True]).reset_index(drop=True)
 
     if output_file is not None:
         counts.to_csv(output_file, index=False)
@@ -83,10 +100,15 @@ def main():
         )
     )
     parser.add_argument("csv_path", help="CSV file or directory containing statement CSV files")
-    parser.add_argument(
+    mapping_source = parser.add_mutually_exclusive_group()
+    mapping_source.add_argument(
         "--mapping-file",
         default=None,
         help="Path to the category mapping JSON file. Defaults to shopname_category_mapping.json",
+    )
+    mapping_source.add_argument(
+        "--mapping-dir",
+        help="Directory containing category mapping JSON files",
     )
     parser.add_argument(
         "--output",
@@ -94,7 +116,12 @@ def main():
     )
     args = parser.parse_args()
 
-    result = extract_uncategorized_items(args.csv_path, args.mapping_file, args.output)
+    result = extract_uncategorized_items(
+        args.csv_path,
+        mapping_file=args.mapping_file,
+        output_file=args.output,
+        mapping_dir=args.mapping_dir,
+    )
 
     if result.empty:
         print("No uncategorized items found.")
