@@ -15,13 +15,14 @@ It combines multiple statement files, removes noisy columns, matches transaction
 
 ## Project layout
 
-- `sm.py` — command-line pipeline entry point
-- `gui.py` — Tkinter desktop application
-- `combine_csv.py` — merge statement CSV files
-- `filter_csv.py` — remove columns and filter converted values
-- `categorize_csv.py` — assign category labels based on merchant text
-- `summarize_csv.py` — aggregate totals by category
-- `csv_to_html.py` — create the final HTML report
+- `src/sm.py` — command-line pipeline entry point
+- `src/gui.py` — Tkinter desktop application
+- `src/combine_csv.py` — merge statement CSV files
+- `src/combine_category_json.py` — merge category mapping JSON files
+- `src/filter_csv.py` — remove columns and filter converted values
+- `src/categorize_csv.py` — assign category labels based on merchant text
+- `src/summarize_csv.py` — aggregate totals by category
+- `src/csv_to_html.py` — create the final HTML report
 - `shopname_category_mapping.json` — default merchant-to-category rules
 - `build_executables.sh` — rebuild GUI and CLI executables with PyInstaller
 
@@ -36,10 +37,17 @@ python -m pip install -r requirements.txt
 ## Command-line usage
 
 ```bash
-python sm.py --statementdir ./statements --outputdir ./output --mapping-file ./shopname_category_mapping.json
+python sm.py --statementdir ./statements --outputdir ./output --mapping-file ./shopname_category_mapping.json --partner-filter-file ./partner_filter.json
 ```
 
 This generates an HTML report in the output folder.
+The optional `--partner-filter-file` excludes transactions whose `Partner Name` exactly matches a value in the JSON file. Its format is:
+
+```json
+{
+	"Partner Name": ["Example Name 1", "Example Name 2"]
+}
+```
 
 ## GUI usage
 
@@ -47,7 +55,7 @@ This generates an HTML report in the output folder.
 python gui.py
 ```
 
-The GUI lets you choose the statement folder, output folder, and mapping file, then starts the processing pipeline from a desktop window.
+The GUI lets you choose the statement folder, output folder, mapping file, and optional Partner Name filter JSON, then starts the processing pipeline from a desktop window.
 
 ## Building executables
 

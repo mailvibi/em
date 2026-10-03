@@ -1,66 +1,164 @@
 {
-    "SuperMarket" : [
-        "Lidl sagt Danke",
-        "Tegut Filiale",
-        "Rossmann",
-        "IIFOODS.DE"
+    "Amazon": [
+        "AMZN Mktp DE",
+        "AMAZON.DE",
+        "AMAZON",
+        "AMZN",
+        "Prime Video",
+        "Amazon.de"
     ],
-
-    "Travel" : [
-        "Booking.com",
-        "ADAC Geschaeftsstelle"
+    "Car": [
+        "Reifen Simon"
     ],
-
-    "Hotel & Food" : [
+    "Car-Fuel": [
+        "Shell",
+        "Spessart Sued Tankshop",
+        "Aral BAT Spessart"
+    ],
+    "Car-Parking": [
+        "PARKGEBUEHREN",
+        "Q PARK",
+        "Parkhaus",
+        "Contipark",
+        "fair parken GmbH",
+        "PSA 41"
+    ],
+    "Club": [
+        "TV Langen",
+        "Turnverein 1862 Langen e.V",
+        "Johanniter-Unfall-Hilfe e. V.",
+        "Kerala Samajam ",
+        "Volkshochschule"
+    ],
+    "Hotel & Food": [
         "Autobahnrasthaus",
+        "Der Baecker Eifler",
         "Rasthaus",
         "Rasthof",
         "Lieferando.de",
-		"KFC"
+        "KFC",
+        "AutogrillMiddleEastLLC",
+        "S S P EMIRATES LLC",
+        "Schaefer Dein Baecker",
+        "Baeckerei Bauder",
+        "SumUp  *Mr.Chan Van",
+        "bb.q Chicken Schillers",
+        "WIENER FEINBAECKEREI",
+        "Frohnibär 15",
+        "DA PULCINELLA",
+        "Eiscafe La Dolce",
+        "SumUp  *Station Point",
+        "MEO Lebensmittel GmbH",
+        "LAGARDERE FOODSERVICE",
+        "Eftelya"
     ],
-
-    "Shopping" : [
-        "Siemes Schuhcenter",
-        "KiK Fil",
-        "Kaufhaus Braun",
-        "toom"
+    "JOB-Learning": [
+        "HUGGINGFACE",
+        "ANTHROPIC",
+        "ANTHROPIC*",
+        "ANTHROPIC* CLAUDE SUB"
     ],
-
-	"Amazon" : [
-        "AMZN Mktp DE",
-		"AMAZON.DE"
-	],
-
-    "Car" : [
-        "Shell",
-        "Reifen Simon",
-        "PARKGEBUEHREN",
-        "Q PARK",
-		"Parkhaus"
+    "Sini-Learning": [
+        "OBN26-01124"
     ],
-
-    "MonthlyDeductions" : [
+    "Medical": [
+        "Dr. med. Nina Ewerdwal",
+        "MUENCHSCHE-APOTHEKE",
+        "Braunsche Apotheke"
+    ],
+    "MONTHLY_RANDOM": [
+        "Deutsche Post",
+        "PAYPAL *nailya.hechler",
+        "PAYPAL *DOO GMBH",
+        "Etsy.com*NaehundStick",
+        "UZR*CineStarMetropolis",
+        "PAYPAL *daniwer146",
+        "PAYPAL *gregor.marquar",
+        "PAYPAL *MATT GLANZ",
+        "Boettcher Datentechnik GmbH",
+        "PAYPAL *VODAFONE"
+    ],
+    "Travel": [
+        "Booking.com",
+        "ADAC Geschaeftsstelle"
+    ],
+    "MonthlyDeductions": [
         "AMAZON PRIM",
         "Lebara Germany"
     ],
-
-	"TV Tax" : [
-		"Rundfunk ARD, ZDF, DRadio"
-	],
-
-    "Utilities" : [
+    "TV Tax": [
+        "Rundfunk ARD, ZDF, DRadio"
+    ],
+    "Utilities": [
         "Stadtwerke Langen Gesellschaft"
     ],
-
-    "Medical" : [
-        "Dr. med. Nina Ewerdwal",
-		"MUENCHSCHE-APOTHEKE"
+    "Local Travel": [
+        "RMV APP",
+        "PAYPAL *RMV"
     ],
-
-    "Other" : [
+    "Other": [
         "CONNFAIR",
+        "NORDWESTZENTRUM"
+    ],
+    "PAJ-Tracking": [
+        "PAJ "
+    ],
+    "ETIHADAIR": [
+        "ETIHADAIR"
+    ],
+    "REPAIR": [
+        "MIELE VERTRIEBSGESELLSCHAFT",
+        "FixPart"
+    ],
+    "ELECTRONIC_APPLIANCE": [
+        "MEDIA MARKT"
+    ],
+    "Shopping (Dress,Shoes etc)": [
+        "Siemes Schuhcenter",
+        "KiK Fil",
+        "Kaufhaus Braun",
+        "toom",
+        "PAYPAL *TEMU",
+        "112 ROFU EGELSB",
+        "Takko Fashion",
+        "Woolworth GmbH",
+        "Ernsting's family",
+        "BRAUN GMBH",
+        "SHEIN.COM",
+        "KiK Textilien",
+        "JYSK Egelsbach",
+        "TEDI",
+        "KRUG SCHUHE LANGEN",
+        "Ernsting_s family"
+    ],
+    "SuperMarket": [
+        "Lidl sagt Danke",
+        "Tegut Filiale",
+        "Rossmann",
+        "IIFOODS.DE",
+        "REWE Egelsbach",
+        "ALDI SUED",
+        "DESI Food",
+        "Buhara Seafood",
+        "HIT 4333 Langen",
+        "SP SHOPIFY INDIRAFOODS",
+        "Asia Food Market",
+        "ALDI SUeD",
+        "Spicelands GmbH",
+        "Jaffna Basar",
+        "Lekkerland REWE To Go",
+        "REWE Fatih Tokmak oHG",
+        "DM DROGERIE SAGT DANKE"
+    ],
+    "TRIP": [
         "HAUS DER 1000 UHREN",
         "Greifvogel  und Eulen",
-        "Eble Uhren-Park"
+        "Eble Uhren-Park",
+        "TG Koblenz Schloss",
+        "SumUp  *KioskRhein1",
+        "Skyglide Event Deutsch",
+        "SumUp  *Melanie Diller",
+        "SSP EMIRATES LLC",
+        "The Souq LLC"
     ]
 }
