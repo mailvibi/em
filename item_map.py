@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from combine_category_json import CategoryJsonCombiner
+
 
 ITEM_TO_CATAGORY_MAP_FILE = Path(__file__).resolve().with_name(
     "shopname_category_mapping.json"
@@ -38,3 +40,24 @@ def get_item_map(json_filename=None):
         raise Exception(f"Invalid JSON format in file '{mapping_path}': {error}") from error
     except Exception as error:
         raise Exception(f"Error processing JSON file '{mapping_path}': {error}") from error
+
+
+def get_item_map_from_dir(directory):
+    """Load category JSON files from a directory and return the reversed mapping."""
+    try:
+        original_dict = CategoryJsonCombiner(directory).get_combined_json_data()
+
+        reversed_dict = {}
+        for category, items in original_dict.items():
+            for item in items:
+                try:
+                    hash(item)
+                except TypeError as error:
+                    raise ValueError(
+                        f"Value '{item}' for key '{category}' is not hashable and cannot be used as a dictionary key"
+                    ) from error
+                reversed_dict[item] = category
+
+        return reversed_dict
+    except Exception as error:
+        raise Exception(f"Error processing category directory '{directory}': {error}") from error
