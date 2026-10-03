@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.combine_csv import stage0_1_add_csvfilename, stage0_2_normalize_german_columns
+from src.filter_csv import stage4_filter_and_convert_csv
 from src.sm import run_pipeline
 
 
@@ -13,6 +14,30 @@ def _write_csv(path: Path, rows, columns):
 
 
 class PipelineStageReorderTests(unittest.TestCase):
+    def test_stage4_reports_csv_line_for_non_numeric_value(self):
+        source_dir = Path("/tmp") / "statement_pipeline_invalid_amount_test"
+        if source_dir.exists():
+            shutil.rmtree(source_dir)
+        source_dir.mkdir()
+        input_path = source_dir / "statement.csv"
+        _write_csv(
+            input_path,
+            [
+                ["2026-01-10", -15.5],
+                ["2026-01-11", "bad-a"],
+                ["2026-01-12", "bad-b"],
+                ["2026-01-13", "bad-c"],
+                ["2026-01-14", "bad-d"],
+            ],
+            ["Booking Date", "Amount (EUR)"],
+        )
+
+        with self.assertRaisesRegex(
+            Exception,
+            r"CSV row\(s\): \[3, 4, 5, 6\].*first invalid value\(s\): \['bad-a', 'bad-b', 'bad-c'\]",
+        ):
+            stage4_filter_and_convert_csv(input_path, "Amount (EUR)", source_dir / "output")
+
     def test_stage0_2_renames_german_statement_columns(self):
         with self.subTest():
             source_dir = Path("/tmp") / "statement_pipeline_german_test"

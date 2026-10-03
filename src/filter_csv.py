@@ -60,9 +60,17 @@ def stage4_filter_and_convert_csv(csv_filename, column_name, output_directory):
         if column_name not in df.columns:
             raise Exception(f"Column '{column_name}' not found in CSV file")
 
-        df[column_name] = pd.to_numeric(df[column_name], errors="coerce")
-        if df[column_name].isna().any():
-            raise Exception(f"Column '{column_name}' contains non-numeric values that cannot be processed")
+        original_values = df[column_name].copy()
+        converted_values = pd.to_numeric(original_values, errors="coerce")
+        invalid_rows = df.index[converted_values.isna()]
+        if not invalid_rows.empty:
+            csv_row_numbers = (invalid_rows + 2).tolist()
+            invalid_values = original_values.loc[invalid_rows].head(3).tolist()
+            raise Exception(
+                f"Column '{column_name}' contains non-numeric values that cannot be processed "
+                f"at CSV row(s): {csv_row_numbers}; first invalid value(s): {invalid_values}"
+            )
+        df[column_name] = converted_values
 
         df_filtered = df[df[column_name] < 0].copy()
         df_filtered[column_name] = df_filtered[column_name].abs()
