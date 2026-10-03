@@ -10,7 +10,7 @@ import pandas as pd
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.item_map import get_item_map, get_item_map_from_dir
+from src.combine_csv import normalize_german_columns, read_statement_csv
 from src.constants import (
     BOOKING_DATE_COLUMN,
     CSV_FILENAME_COLUMN,
@@ -18,6 +18,7 @@ from src.constants import (
     OCCURRENCES_COLUMN,
     PARTNER_NAME_COLUMN,
 )
+from src.item_map import get_item_map, get_item_map_from_dir
 
 
 def find_category_for_value(value, mapping_dict):
@@ -55,7 +56,7 @@ def extract_uncategorized_items(csv_path, mapping_file=None, output_file=None, m
 
     for csv_file in iter_csv_files(csv_path):
         try:
-            dataframe = pd.read_csv(csv_file)
+            dataframe = normalize_german_columns(read_statement_csv(csv_file))
         except Exception as exc:  # pragma: no cover - defensive error handling
             raise ValueError(f"Could not read '{csv_file}': {exc}") from exc
 

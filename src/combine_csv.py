@@ -11,18 +11,30 @@ from src.constants import (
 )
 
 
+def read_statement_csv(csv_file_path):
+    """Read a supported statement CSV, detecting the German semicolon format."""
+    input_path = Path(csv_file_path)
+    with input_path.open("r", encoding="utf-8-sig") as input_file:
+        first_header = input_file.readline().split(";")[0]
+    if first_header == GERMAN_BOOKING_DATE_COLUMN:
+        return pd.read_csv(input_path, sep=";", encoding="utf-8-sig")
+    return pd.read_csv(input_path)
+
+
+def normalize_german_columns(dataframe):
+    """Rename supported German statement columns to the standard schema."""
+    if GERMAN_BOOKING_DATE_COLUMN in dataframe.columns:
+        return dataframe.rename(columns=GERMAN_COLUMN_RENAMES)
+    return dataframe
+
+
 def stage0_1_add_csvfilename(csv_file_path, output_directory):
     """Add the source filename stem as csvfilename and save a prepared copy."""
     input_path = Path(csv_file_path)
     output_dir = Path(output_directory)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    with input_path.open("r", encoding="utf-8-sig") as input_file:
-        first_header = input_file.readline().split(";")[0]
-    if first_header == GERMAN_BOOKING_DATE_COLUMN:
-        df = pd.read_csv(input_path, sep=";", encoding="utf-8-sig")
-    else:
-        df = pd.read_csv(input_path)
+    df = read_statement_csv(input_path)
     df[CSV_FILENAME_COLUMN] = input_path.stem
     output_path = output_dir / f"{input_path.stem}_stage0_1_prepared.csv"
     df.to_csv(output_path, index=False)
@@ -34,10 +46,10 @@ def stage0_2_normalize_german_columns(file_paths):
     normalized_paths = []
     for file_path in file_paths:
         input_path = Path(file_path)
-        df = pd.read_csv(input_path)
-        if GERMAN_BOOKING_DATE_COLUMN in df.columns:
-            df = df.rename(columns=GERMAN_COLUMN_RENAMES)
-            df.to_csv(input_path, index=False)
+        dataframe = pd.read_csv(input_path)
+        normalized_dataframe = normalize_german_columns(dataframe)
+        if GERMAN_BOOKING_DATE_COLUMN in dataframe.columns:
+            normalized_dataframe.to_csv(input_path, index=False)
         normalized_paths.append(input_path)
     return normalized_paths
 
