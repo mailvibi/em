@@ -8,7 +8,8 @@
         "Amazon.de"
     ],
     "Car": [
-        "Reifen Simon"
+        "Reifen Simon",
+        "HERMANN LEHNER"
     ],
     "Car-Fuel": [
         "Shell",
@@ -82,9 +83,10 @@
         "Booking.com",
         "ADAC Geschaeftsstelle"
     ],
-    "MonthlyDeductions": [
+    "MonthlyDeductions (prime, lebara, internet)": [
         "AMAZON PRIM",
-        "Lebara Germany"
+        "Lebara Germany",
+        "1+1 Telecom GmbH"
     ],
     "TV Tax": [
         "Rundfunk ARD, ZDF, DRadio"
@@ -112,6 +114,16 @@
     ],
     "ELECTRONIC_APPLIANCE": [
         "MEDIA MARKT"
+    ],
+    "Anvi": [
+        "Forderverein Geschwister-Scholl"
+    ],
+    "Kukku": [
+        "ANNE SEITZ",
+        "Berndt + Marx OHG"
+    ],
+    "Rent": [
+        "Kurt Manowski"
     ],
     "Shopping (Dress,Shoes etc)": [
         "Siemes Schuhcenter",
@@ -160,5 +172,9 @@
         "SumUp  *Melanie Diller",
         "SSP EMIRATES LLC",
         "The Souq LLC"
+    ],
+    "Versicherung": [
+        "ALLIANZ VERSICHERUNGS",
+        "DEUTSCHE LEBENSVERSICHERUNGS"
     ]
 }
