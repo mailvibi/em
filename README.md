@@ -18,6 +18,7 @@ It combines multiple statement files, removes noisy columns, matches transaction
 - `sm.py` — command-line pipeline entry point
 - `gui.py` — Tkinter desktop application
 - `combine_csv.py` — merge statement CSV files
+- `combine_category_json.py` — merge category mapping JSON files
 - `filter_csv.py` — remove columns and filter converted values
 - `categorize_csv.py` — assign category labels based on merchant text
 - `summarize_csv.py` — aggregate totals by category
