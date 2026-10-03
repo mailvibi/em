@@ -1,9 +1,12 @@
 import argparse
+import calendar
 import fcntl
 import shutil
 import sys
 import uuid
 from pathlib import Path
+
+import pandas as pd
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -17,6 +20,7 @@ from src.combine_csv import (
 )
 from src.constants import (
     AMOUNT_EUR_COLUMN,
+    BOOKING_DATE_COLUMN,
     DEFAULT_COLUMNS_TO_KEEP,
     PARTNER_NAME_COLUMN,
     REQUIRED_SOURCE_COLUMNS,
@@ -30,6 +34,22 @@ from src.filter_csv import (
 )
 from src.item_map import get_item_map
 from src.summarize_csv import stage5_sum_amounts_by_category
+
+
+def final_stage(report_path, csv_filename):
+    """Rename the stage 6 report using the booking-date year/month periods."""
+    report_path = Path(report_path)
+    date_df = pd.read_csv(csv_filename)
+    booking_dates = pd.to_datetime(
+        date_df[BOOKING_DATE_COLUMN], errors="coerce"
+    ).dropna()
+    periods = sorted(set(zip(booking_dates.dt.year, booking_dates.dt.month)))
+    period_names = [
+        f"{year}_{calendar.month_name[month]}" for year, month in periods
+    ] or ["Unknown_Unknown"]
+    final_path = report_path.with_name(f"Expense_{'_'.join(period_names)}.html")
+    report_path.replace(final_path)
+    return str(final_path)
 
 
 def _validate_source_directory(statement_directory, output_directory):
@@ -136,6 +156,8 @@ def run_pipeline(
                 report_path = stage6_csv_to_html(
                     stage5_output, output_directory, report_title=report_title
                 )
+                report("Finalizing report filename...")
+                report_path = final_stage(report_path, stage4_output)
 
                 if not debug:
                     shutil.rmtree(run_directory, ignore_errors=True)

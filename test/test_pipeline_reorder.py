@@ -144,8 +144,9 @@ class PipelineStageReorderTests(unittest.TestCase):
 
             report_path = run_pipeline(source_dir, output_dir, mapping_file=str(mapping_file), debug=True)
 
-            self.assertEqual(report_path, str(output_dir / "stage6_csv_to_html_output.html"))
+            self.assertEqual(report_path, str(output_dir / "Expense_2026_January.html"))
             self.assertTrue(Path(report_path).exists())
+            self.assertFalse((output_dir / "stage6_csv_to_html_output.html").exists())
             self.assertFalse((output_dir / ".statement_pipeline.lock").exists())
 
             stage2_files = sorted(output_dir.rglob("stage2_combine_csv_files_output.csv"))
