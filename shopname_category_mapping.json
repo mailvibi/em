@@ -6,14 +6,21 @@
         "IIFOODS.DE",
         "REWE Egelsbach",
         "ALDI SUED",
-        "DESI Food"
+        "DESI Food",
+        "Buhara Seafood",
+        "HIT 4333 Langen",
+        "SP SHOPIFY INDIRAFOODS",
+        "Asia Food Market",
+        "ALDI SUeD",
+        "Spicelands GmbH",
+        "Jaffna Basar"
+        
     ],
 
     "Travel" : [
         "Booking.com",
         "ADAC Geschaeftsstelle"
     ],
-
 
     "Hotel & Food" : [
         "Autobahnrasthaus",
@@ -24,16 +31,33 @@
 	"KFC",
 	"AutogrillMiddleEastLLC",
 	"S S P EMIRATES LLC",
-	"Schaefer Dein Baecker"
+	"Schaefer Dein Baecker",
+	"Baeckerei Bauder",
+	"SumUp  *Mr.Chan Van",
+	"bb.q Chicken Schillers",
+	"WIENER FEINBAECKEREI",
+	"Frohnibär 15",
+	"DA PULCINELLA",
+	"Eiscafe La Dolce",
+	"SumUp  *Station Point",
+	"MEO Lebensmittel GmbH"
     ],
 
-    "Shopping" : [
+    "Shopping (Dress,Shoes etc)" : [
         "Siemes Schuhcenter",
         "KiK Fil",
         "Kaufhaus Braun",
         "toom",
         "PAYPAL *TEMU",
-        "112 ROFU EGELSB"
+        "112 ROFU EGELSB",
+        "Takko Fashion",
+        "Woolworth GmbH",
+        "Ernsting's family",
+        "BRAUN GMBH",
+        "SHEIN.COM",
+        "KiK Textilien",
+        "JYSK Egelsbach",
+        "TEDI"
     ],
 
     "Amazon" : [
@@ -59,7 +83,8 @@
         "PARKGEBUEHREN",
         "Q PARK",
 	"Parkhaus",
-	"Contipark"
+	"Contipark",
+	"fair parken GmbH"
     ],
 
     "MonthlyDeductions" : [
@@ -68,7 +93,7 @@
     ],
 
     "TV Tax" : [
-		"Rundfunk ARD, ZDF, DRadio"
+	"Rundfunk ARD, ZDF, DRadio"
      ],
 
     "Utilities" : [
@@ -77,8 +102,8 @@
 
     "Medical" : [
         "Dr. med. Nina Ewerdwal",
-		"MUENCHSCHE-APOTHEKE",
-		"Braunsche Apotheke"
+	"MUENCHSCHE-APOTHEKE",
+	"Braunsche Apotheke"
     ],
 
     "Local Travel" : [
@@ -90,14 +115,13 @@
     	"TV Langen",
     	"Turnverein 1862 Langen e.V",
     	"Johanniter-Unfall-Hilfe e. V.",
-    	"Kerala Samajam "
+    	"Kerala Samajam ",
+    	"Volkshochschule"
     ],
  
     "Other" : [
         "CONNFAIR",
-        "HAUS DER 1000 UHREN",
-        "Greifvogel  und Eulen",
-        "Eble Uhren-Park"
+        "NORDWESTZENTRUM"
     ],
     "PAJ-Tracking" : [
     	"PAJ "
@@ -109,5 +133,32 @@
     	"HUGGINGFACE",
     	"ANTHROPIC",
     	"ANTHROPIC*"
-	]
+	],
+    "REPAIR" : [
+    	"MIELE VERTRIEBSGESELLSCHAFT",
+    	"FixPart"
+    ],
+
+    "ELECTRONIC_APPLIANCE" : [
+    	"MEDIA MARKT"
+    ],
+    
+    "MONTHLY_RANDOM" : [
+    	"Deutsche Post",
+    	"PAYPAL *nailya.hechler",
+    	"PAYPAL *DOO GMBH",
+    	"Etsy.com*NaehundStick",
+    	"UZR*CineStarMetropolis",
+	"PAYPAL *daniwer146"
+	],
+
+    "TRIP" : [
+    	"HAUS DER 1000 UHREN",
+        "Greifvogel  und Eulen",
+        "Eble Uhren-Park",
+    	"TG Koblenz Schloss",
+    	"SumUp  *KioskRhein1",
+    	"Skyglide Event Deutsch"
+    	
+    ]
 }
