@@ -5,6 +5,25 @@ from pathlib import Path
 import pandas as pd
 
 
+def stage1_remove_columns_from_csv(csv_file_path, columns_to_keep, output_directory):
+    """Keep only the allowed columns for a single prepared source file."""
+    input_path = Path(csv_file_path)
+    output_dir = Path(output_directory)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    df = pd.read_csv(input_path)
+    missing_columns = [column for column in columns_to_keep if column not in df.columns]
+    if missing_columns:
+        raise ValueError(
+            f"CSV file '{input_path.name}' missing required columns: {missing_columns}"
+        )
+
+    df_modified = df.loc[:, columns_to_keep]
+    output_path = output_dir / f"{input_path.stem}_stage1.csv"
+    df_modified.to_csv(output_path, index=False)
+    return output_path
+
+
 def stage2_remove_columns_from_csv(csv_file_path, columns_to_keep, output_directory):
     """Remove selected columns and save the modified CSV."""
     os.makedirs(output_directory, exist_ok=True)

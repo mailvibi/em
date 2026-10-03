@@ -1,5 +1,6 @@
 import calendar
 import os
+import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -134,14 +135,23 @@ def stage6_csv_to_html(csv_filename, output_directory=None, report_title="CSV Da
 </body>
 </html>"""
 
-        # Write HTML file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(html_content)
+        # Write HTML file atomically to avoid partially written output files.
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w', encoding='utf-8', suffix='.html', dir=str(output_dir), delete=False
+            ) as temp_file:
+                temp_path = Path(temp_file.name)
+                temp_file.write(html_content)
+            temp_path.replace(output_path)
+        finally:
+            if temp_path is not None and temp_path.exists():
+                temp_path.unlink(missing_ok=True)
 
         print(f"HTML file created successfully: {output_path}")
         print(f"Converted {len(df)} rows and {len(df.columns)} columns")
 
-        return output_path
+        return str(output_path)
 
     except Exception as e:
         raise Exception(f"Error converting CSV to HTML: {e}")
