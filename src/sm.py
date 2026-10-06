@@ -56,9 +56,9 @@ def _validate_source_directory(statement_directory, output_directory):
     statement_directory = Path(statement_directory).resolve()
     output_directory = Path(output_directory).resolve()
 
-    if output_directory == statement_directory or output_directory.is_relative_to(statement_directory):
+    if output_directory != statement_directory and output_directory.is_relative_to(statement_directory):
         raise ValueError(
-            "Output directory must be different from the statement directory and not nested inside it"
+            "Output directory must not be nested inside the statement directory"
         )
 
     legacy_stage_files = []
@@ -154,14 +154,16 @@ def run_pipeline(
                 report("Creating HTML report...")
                 report_title = get_expense_report_title(stage4_output)
                 report_path = stage6_csv_to_html(
-                    stage5_output, output_directory, report_title=report_title
+                    stage5_output, run_directory, report_title=report_title
                 )
                 report("Finalizing report filename...")
                 report_path = final_stage(report_path, stage4_output)
+                final_report_path = output_directory / Path(report_path).name
+                shutil.move(report_path, final_report_path)
 
                 if not debug:
                     shutil.rmtree(run_directory, ignore_errors=True)
-                return str(report_path)
+                return str(final_report_path)
             except Exception:
                 if not debug:
                     shutil.rmtree(run_directory, ignore_errors=True)
@@ -180,7 +182,7 @@ def main():
     parser.add_argument(
         "--debug",
         action="store_true",
-        help="Keep intermediate stage CSV files in the output directory",
+        help="Keep the temporary processing directory and intermediate files",
     )
 
     args = parser.parse_args()

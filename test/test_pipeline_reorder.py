@@ -186,6 +186,44 @@ class PipelineStageReorderTests(unittest.TestCase):
         stage2_files = list(output_dir.rglob("stage2_combine_csv_files_output.csv"))
         self.assertEqual(len(stage2_files), 1)
 
+    def test_run_pipeline_allows_same_source_and_output_directory(self):
+        for debug in (False, True):
+            with self.subTest(debug=debug):
+                source_dir = Path("/tmp") / f"statement_pipeline_same_dir_{debug}"
+                if source_dir.exists():
+                    shutil.rmtree(source_dir)
+                source_dir.mkdir()
+                _write_csv(
+                    source_dir / "statement.csv",
+                    [["2026-09-10", "Grocer", -15.5]],
+                    ["Booking Date", "Partner Name", "Amount (EUR)"],
+                )
+                mapping_path = source_dir / "mapping.json"
+                mapping_path.write_text('{"FOOD": ["Grocer"]}', encoding="utf-8")
+
+                report_path = run_pipeline(
+                    source_dir,
+                    source_dir,
+                    mapping_file=str(mapping_path),
+                    debug=debug,
+                )
+
+                self.assertEqual(
+                    report_path, str(source_dir / "Expense_2026_September.html")
+                )
+                self.assertTrue(Path(report_path).exists())
+                self.assertTrue((source_dir / "statement.csv").exists())
+                run_directories = list(source_dir.glob(".statement_pipeline_run_*"))
+                self.assertEqual(bool(run_directories), debug)
+                if debug:
+                    self.assertTrue(
+                        (run_directories[0] / "stage2_combine_csv_files_output.csv").exists()
+                    )
+                else:
+                    self.assertEqual(
+                        list(source_dir.glob("stage*_*.csv")), []
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()
